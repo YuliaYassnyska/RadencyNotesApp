@@ -1,7 +1,6 @@
 import React from 'react';
 import ListItem from '../ListItem';
 import ListHeader from '../ListHeader';
-import { createStore } from 'redux';
 
 const List = (props) => {
     return <div>
