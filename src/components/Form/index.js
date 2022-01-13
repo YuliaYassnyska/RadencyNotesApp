@@ -28,11 +28,11 @@ const Form = () => {
         listOfOptions: ['Task', 'Task', 'Task', 'Task', 'Task', 'Task', 'Task'],
         listOfDates: ['April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021'],
         noteDate: '',
-        listOfNoteDate: ['', '', '3-12-2020', '', '', '', '']
+        listOfNoteDate: ['', '', '3/12/2020', '', '', '', ''],
+        listUpdates: ['', '', '', '', '', '', '']
     });
     const [option, setOption] = useState('')
     const [listItem, setListItem] = useState(7);
-    const [update, setUpdate] = useState(false);
     const [edit, setEdit] = useState(true);
     const [dropdown, setDropdow] = useState(false)
     const getName = (event) => {
@@ -41,11 +41,12 @@ const Form = () => {
             setValue({ ...value, name: values })
         )
     }
+    const [newItem, setNewItem] = useState(false)
+
 
     const getContent = (e) => {
         let newValue = e.currentTarget.value;
         setValue({ ...value, content: newValue })
-
     }
 
     const sumbit = () => {
@@ -56,24 +57,25 @@ const Form = () => {
         setListItem(listItem + 1);
 
         let listOfNames = value.listOfNames.push(value.name);
-        let listOfNoteDate = value.listOfNoteDate.push(value.noteDate);
-        let listOfContents = value.listOfContents.push(value.content);
         let listOfOptions = value.listOfOptions.push(option);
         let listOfDates = value.listOfDates.push(date);
+        let listOfContents;
+        let listOfUpdates = value.listUpdates.push('')
 
-        let valid = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
-        // console.log(newValue)
+        //////////////////////////////////////////////////////////////
+        let valid = /\d{1,2}[-,\\,|,/]\d{1,2}[-,\\,|,/]\d{4}/;
 
-        // let valid = /^\d{2}([./-])\d{2}\1\d{4}$/gi
-        // console.log("12-12-2000sadasd".match(valid))
-        if (valid.search(value.content)) {
-            console.log(valid.search(value.content))
-            setValue({ ...value, noteDate: value.content })
-            // let y = [...Array(newValue)].indexOf('1')
-            // console.log(y)
+        let listOfNoteDate;
+
+        if (valid.test(value.content)) {
+            let dateOfContext = value.content.match(valid)[0];
+            listOfNoteDate = value.listOfNoteDate.push(dateOfContext)
+            listOfContents = value.listOfContents.push(value.content.replace(valid));
         } else {
-            setValue({ ...value, content: value.content })
+            listOfNoteDate = value.listOfNoteDate.push('')
+            listOfContents = value.listOfContents.push(value.content);
         }
+        //////////////////////////////////////////////////////////////
 
         setValue({
             ...value,
@@ -86,7 +88,19 @@ const Form = () => {
             listOfOptions,
             listOfDates,
             listOfNoteDate,
+            listOfUpdates
         }
+    }
+
+    const update = (index) => {
+        return <input
+            onChange={(event) => {
+                setEdit(true);
+                let newValue = event.currentTarget.value;
+                value.listOfNames[index] = newValue;
+                setValue({ ...value, newName: newValue })
+            }}
+            defaultValue={edit ? value.newName : value.listOfNames[index]} />
     }
 
     const getListItem = () => {
@@ -94,20 +108,11 @@ const Form = () => {
             return <div className={classes.wrappers} key={index}>
                 <EventNoteRoundedIcon />
                 <div className={classes.textContainer}>
-                    {update ? <input
-                        key={item}
-                        id={index}
-                        onChange={(event) => {
-                            setEdit(true);
-                            let newValue = event.currentTarget.value;
-                            value.listOfNames[index] = newValue;
-                            return setValue({ ...value, newName: newValue })
-                        }}
-                        defaultValue={edit ? value.newName : value.listOfNames[index]} /> :
+                    {value.listUpdates[index] === true ? update(index) :
                         <div className={classes.text}>{value.listOfNames[index]}</div>}
                     <div className={classes.text}>{value.listOfDates[index]}</div>
                     <div className={classes.text}>{value.listOfOptions[index]}</div>
-                    {update ? <input
+                    {value.listUpdates[index] === true ? <input
                         onChange={(e) => {
                             setEdit(true);
                             let newValue = e.currentTarget.value;
@@ -117,10 +122,15 @@ const Form = () => {
                         defaultValue={edit ? value.newContent : value.listOfContents[index]} /> :
                         <div className={classes.text}>{value.listOfContents[index]}</div>}
                     <div className={classes.text}>{value.listOfNoteDate[index]}</div>
-                    {update && <button onClick={() => setUpdate(false)}>Save</button>}
+                    {value.listUpdates[index] === true && <button onClick={() => {
+                        value.listUpdates[index] = false
+                        setNewItem(value.listUpdates[index])
+                    }}>Save</button>}
                 </div><div className={classes.icons}>
                     <div key={index} onClick={() => {
-                        setUpdate(true);
+                        value.listUpdates[index] = true
+                        console.log(value.listUpdates[index])
+                        setNewItem(value.listUpdates[index])
                     }}>
                         <EditIcon />
                     </div>
