@@ -28,7 +28,7 @@ const Form = () => {
         listOfOptions: ['Task', 'Task', 'Task', 'Task', 'Task', 'Task', 'Task'],
         listOfDates: ['April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021', 'April, 20, 2021'],
         noteDate: '',
-        listOfNoteDate: ['', '', '3/12/2020', '', '', '', ''],
+        listOfNoteDate: ['3/12/2020', '', '', '', '', '', ''],
         listUpdates: ['', '', '', '', '', '', '']
     });
     const [option, setOption] = useState('')
@@ -181,7 +181,7 @@ const Form = () => {
                         <DeleteIcon />
                     </div>
                 </div>
-            </div>
+            </div >
         })
 
         return item
